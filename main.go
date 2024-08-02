@@ -24,6 +24,9 @@ func main() {
 	// Endpoint para ejecutar comandos en el contexto del servidor de archivos
 	http.HandleFunc("/execute-files", executeCommandFiles)
 
+	// Endpoint para ejecutar scripts de Python
+	http.HandleFunc("/execute-python", executePythonScript)
+
 	// Iniciar el servidor en el puerto 8080
 	log.Println("Servidor de archivos escuchando en http://localhost:8080")
 	err := http.ListenAndServe(":8080", nil)
@@ -74,6 +77,33 @@ func executeCommandFiles(w http.ResponseWriter, r *http.Request) {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error al ejecutar el comando: %s", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(output)
+}
+
+// Endpoint para ejecutar scripts de Python
+func executePythonScript(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
+		return
+	}
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "No se pudo leer el cuerpo de la solicitud", http.StatusInternalServerError)
+		return
+	}
+
+	// El cuerpo de la solicitud debe contener el nombre del script y los argumentos (si los hay)
+	scriptAndArgs := string(body)
+
+	// Ejecutar el script de Python
+	cmd := exec.Command("python3", scriptAndArgs)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error al ejecutar el script de Python: %s", err), http.StatusInternalServerError)
 		return
 	}
 
