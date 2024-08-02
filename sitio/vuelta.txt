@@ -1,0 +1,36 @@
+import subprocess
+
+def ejecutar_script_golang():
+    try:
+        # Ejecutar el comando de Golang
+        resultado = subprocess.run(
+            ['go', 'run', 'github.com/diego-all/falco-workshop@v0.1.22', 'init', '--vector', 'A'],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+
+        #resultado = subprocess.run(
+        #    ['go', 'run', 'github.com/diego-all/falco-workshop@v0.1.15', 'init', '--interactive'],
+        #    capture_output=True,
+        #    text=True,
+        #    check=True
+        #)
+
+
+        
+        # Imprimir la salida del comando de Golang
+        print("Salida estándar:")
+        print(resultado.stdout)
+        print("Salida de error:")
+        print(resultado.stderr)
+    
+    except subprocess.CalledProcessError as e:
+        print(f"Error al ejecutar el comando de Golang: {e}")
+        print("Salida de error:")
+        print(e.stderr)
+    except Exception as e:
+        print(f"Error inesperado: {e}")
+
+if __name__ == "__main__":
+    ejecutar_script_golang()
